@@ -1,0 +1,125 @@
+---
+#
+# This is the canonical configuration for the `README.md`
+# Run `make readme` to rebuild the `README.md`
+#
+# Name of this project
+name: terraform-aws-cloudwatch-agent
+
+# Tags of this project
+tags:
+  - aws
+  - terraform
+  - terraform-modules
+  - platform
+  - cloudwatch
+  - agent
+  - cloudwatch-agent
+
+# Categories of this project
+categories:
+  - terraform-modules/platform
+
+# Logo for this project
+#logo: docs/logo.png
+
+# License of this project
+license: "APACHE2"
+
+# Canonical GitHub repo
+github_repo: cloudposse/terraform-aws-cloudwatch-agent
+
+# Badges to display
+badges:
+  - name: "Build Status"
+    image: "https://travis-ci.org/cloudposse/terraform-aws-cloudwatch-agent.svg?branch=master"
+    url: "https://travis-ci.org/cloudposse/terraform-aws-cloudwatch-agent"
+  - name: "Latest Release"
+    image: "https://img.shields.io/github/release/cloudposse/terraform-aws-cloudwatch-agent.svg"
+    url: "https://github.com/cloudposse/terraform-aws-cloudwatch-agent/releases/latest"
+  - name: "Slack Community"
+    image: "https://slack.cloudposse.com/badge.svg"
+    url: "https://slack.cloudposse.com"
+
+related:
+  - name: "terraform-aws-ec2-instance"
+    description: "Terraform Module for provisioning a general purpose EC2 host."
+    url: "https://github.com/cloudposse/terraform-aws-ec2-instance"
+
+# Short description of this project
+description: |-
+  Terraform module to install the cloudwatch agent on an ec2 instance using cloud-init.
+
+# How to use this project
+examples: |-
+
+  ### Example with launch configuration.
+
+  ```hcl
+  module "cloudwatch_agent" {
+    source      = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+
+    name        = "cloudwatch_agent"
+  }
+
+  resource "aws_launch_configuration" "multipart" {
+    name_prefix          = "cloudwatch_agent"
+    image_id             = "${data.aws_ami.ecs-optimized.id}"
+    iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
+    instance_type        = "t2.micro"
+    user_data_base64     = "${module.cloudwatch_agent.user_data}"
+    security_groups      = ["${aws_security_group.ecs.id}"]
+    key_name             = "${var.ssh_key_pair}"
+
+    lifecycle {
+      create_before_destroy = true
+    }
+  }
+  ```
+
+  ### Example with passing user-data and using the role from the module with using advanced metrics configuration.
+
+  ```hcl
+  module "cloudwatch_agent" {
+    source      = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+
+    name                  = "cloudwatch_agent"
+    environment           = "dev"
+    namespace             = "cp"
+
+    metrics_config        = "advanced"
+    userdata_part_content = "${data.template_file.cloud-init.rendered}"
+  }
+
+  data "template_file" "cloud-init" {
+    template = "${file("${path.module}/cloud-init.yml")}"
+  }
+
+  resource "aws_launch_configuration" "multipart" {
+    name_prefix          = "cloudwatch_agent"
+    image_id             = "${data.aws_ami.ecs-optimized.id}"
+    iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
+    instance_type        = "t2.micro"
+    user_data_base64     = "${module.cloudwatch_agent.user_data}"
+    security_groups      = ["${aws_security_group.ecs.id}"]
+    key_name             = "${var.ssh_key_pair}"
+
+    lifecycle {
+      create_before_destroy = true
+    }
+  }
+
+  resource "aws_iam_instance_profile" "cloudwatch_agent" {
+    name_prefix = "cloudwatch_agent"
+    role        = "${module.cloudwatch_agent.role_name}"
+  }
+  ```
+
+include:
+  - "docs/targets.md"
+  - "docs/terraform.md"
+
+# Contributors to this project
+contributors:
+  - name: "Nikola Velkovski"
+    github: "parabolic"
