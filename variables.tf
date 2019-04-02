@@ -21,19 +21,19 @@ variable "disk_resources" {
 }
 
 variable "userdata_part_content" {
-  description = "The user data that should be passed along from the caller of the module."
+  description = "The user data that should be passed along from the caller of the module"
   type        = "string"
   default     = ""
 }
 
 variable "userdata_part_content_type" {
-  description = "What format is userdata_part_content in - eg 'text/cloud-config' or 'text/x-shellscript'."
+  description = "What format is userdata_part_content in, e.g. 'text/cloud-config' or 'text/x-shellscript'"
   type        = "string"
   default     = "text/cloud-config"
 }
 
 variable "userdata_part_merge_type" {
-  description = "Control how cloud-init merges user-data sections."
+  description = "Control how cloud-init merges user-data sections"
   type        = "string"
   default     = "list(append)+dict(recurse_array)+str()"
 }
