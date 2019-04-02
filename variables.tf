@@ -39,9 +39,8 @@ variable "userdata_part_merge_type" {
 }
 
 variable "namespace" {
-  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'"
+  description = "Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'."
   type        = "string"
-  default     = ""
 }
 
 variable "environment" {
