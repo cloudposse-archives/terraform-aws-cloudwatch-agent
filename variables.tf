@@ -33,7 +33,7 @@ variable "userdata_part_content_type" {
 }
 
 variable "userdata_part_merge_type" {
-  description = "Control how cloud-init merges user-data sections."
+  description = "Control how cloud-init merges user-data sections"
   type        = "string"
   default     = "list(append)+dict(recurse_array)+str()"
 }
