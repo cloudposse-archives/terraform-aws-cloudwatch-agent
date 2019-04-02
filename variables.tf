@@ -56,7 +56,7 @@ variable "name" {
 
 variable "metrics_config" {
   description = <<EOF
-  "Which metrics should we send to cloudwatch, the default is standard. Setting this variable to advanced will send all the available metrics that are provided by the agent.
+  "Which metrics should we send to CloudWatch, the default is `standard`. Setting this variable to `advanced` will send all the available metrics that are provided by the agent
   You can find more information here https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html"
 EOF
 
