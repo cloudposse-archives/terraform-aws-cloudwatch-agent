@@ -1,5 +1,5 @@
 variable "aggregation_dimensions" {
-  description = "Specifies the dimensions that collected metrics are to be aggregated on."
+  description = "Specifies the dimensions that collected metrics are to be aggregated on"
   type        = "list"
 
   default = [
