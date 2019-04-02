@@ -129,7 +129,7 @@ examples: |-
   }
   ```
 
-  ### Example with passing user-data and using the role from the module with using advanced metrics configuration.
+  ### Example with passing user-data and using the role from the module using advanced metrics configuration:
 
   ```hcl
   module "cloudwatch_agent" {
