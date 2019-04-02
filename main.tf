@@ -53,47 +53,44 @@ data "template_cloudinit_config" "cloud_init_merged" {
   }
 }
 
+data "aws_iam_policy_document" "ec2_cloudwatch" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals = {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
 resource "aws_iam_role" "ec2_cloudwatch" {
   name = "${module.label.id}"
 
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
+  assume_role_policy = "${data.aws_iam_policy_document.ec2_cloudwatch.json}"
 
   tags = {
     Name = "${module.label.id}"
   }
 }
 
+data "aws_iam_policy_document" "wildcard_cloudwatch_agent" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeTags",
+      "cloudwatch:PutMetricData",
+    ]
+
+    resources = ["*"]
+  }
+}
+
 resource "aws_iam_role_policy" "wildcard_cloudwatch_agent" {
   name = "${module.label.id}"
-  role = "${aws_iam_role.ec2_cloudwatch.id}"
 
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "ec2:DescribeTags",
-        "cloudwatch:PutMetricData"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
-}
-EOF
+  role   = "${aws_iam_role.ec2_cloudwatch.id}"
+  policy = "${data.aws_iam_policy_document.wildcard_cloudwatch_agent.json}"
 }
