@@ -27,7 +27,7 @@ variable "userdata_part_content" {
 }
 
 variable "userdata_part_content_type" {
-  description = "What format is userdata_part_content in - eg 'text/cloud-config' or 'text/x-shellscript'."
+  description = "What format is userdata_part_content in, e.g. 'text/cloud-config' or 'text/x-shellscript'"
   type        = "string"
   default     = "text/cloud-config"
 }
