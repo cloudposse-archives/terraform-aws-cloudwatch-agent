@@ -15,7 +15,7 @@ variable "cpu_resources" {
 }
 
 variable "disk_resources" {
-  description = "If you specify an array of devices, CloudWatch collects metrics from only those devices. Otherwise, metrics for all devices are collected"
+  description = "Specifies an array of disk mount points. This field limits CloudWatch to collect metrics from only the listed mount points. You can specify * as the value to collect metrics from all mount points. Defaults to the root / mountpount."
   type        = "list"
   default     = ["/"]
 }
