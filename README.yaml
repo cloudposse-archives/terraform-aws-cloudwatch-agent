@@ -85,7 +85,7 @@ examples: |-
 
     name                  = "cloudwatch_agent"
     environment           = "dev"
-    namespace             = "cp"
+    namespace             = "eg"
 
     metrics_config        = "advanced"
     userdata_part_content = "${data.template_file.cloud-init.rendered}"
