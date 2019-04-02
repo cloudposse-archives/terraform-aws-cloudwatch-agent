@@ -105,7 +105,7 @@ description: |-
 # How to use this project
 examples: |-
 
-  ### Example with launch configuration.
+  ### Example with launch configuration:
 
   ```hcl
   module "cloudwatch_agent" {
