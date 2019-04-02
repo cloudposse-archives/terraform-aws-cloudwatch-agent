@@ -6,7 +6,7 @@
 # terraform-aws-cloudwatch-agent [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-cloudwatch-agent.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-cloudwatch-agent) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-cloudwatch-agent.svg)](https://github.com/cloudposse/terraform-aws-cloudwatch-agent/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
 
-Terraform module to install the cloudwatch agent on an ec2 instance using cloud-init.
+Terraform module to install the CloudWatch agent on EC2 instances using `cloud-init`.
 
 
 ---
@@ -47,7 +47,7 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 ## Examples
 
 
-### Example with launch configuration.
+### Example with launch configuration:
 
 ```hcl
 module "cloudwatch_agent" {
@@ -71,7 +71,7 @@ resource "aws_launch_configuration" "multipart" {
 }
 ```
 
-### Example with passing user-data and using the role from the module with using advanced metrics configuration.
+### Example with passing user-data and using the role from the module using advanced metrics configuration:
 
 ```hcl
 module "cloudwatch_agent" {
@@ -79,7 +79,7 @@ module "cloudwatch_agent" {
 
   name                  = "cloudwatch_agent"
   environment           = "dev"
-  namespace             = "cp"
+  namespace             = "eg"
 
   metrics_config        = "advanced"
   userdata_part_content = "${data.template_file.cloud-init.rendered}"
@@ -126,13 +126,13 @@ Available targets:
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aggregation_dimensions | Specifies the dimensions that collected metrics are to be aggregated on. | list | `<list>` | no |
-| cpu_resources | Specifies that per-cpu metrics are to be collected. The only allowed value is *. If you include this field and value, per-cpu metrics are collected | string | `"resources": ["*"],` | no |
-| disk_resources | If you specify an array of devices, CloudWatch collects metrics from only those devices. Otherwise, metrics for all devices are collected | list | `<list>` | no |
-| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
+| cpu_resources | Specifies that per-cpu metrics are to be collected. The only allowed value is *. If you include this field and value, per-cpu metrics are collected. | string | `"resources": ["*"],` | no |
+| disk_resources | Specifies an array of disk mount points. This field limits CloudWatch to collect metrics from only the listed mount points. You can specify * as the value to collect metrics from all mount points. Defaults to the root / mountpount. | list | `<list>` | no |
 | metrics_collection_interval | Specifies how often to collect the cpu metrics, overriding the global metrics_collection_interval specified in the agent section of the configuration file. If you set this value below 60 seconds, each metric is collected as a high-resolution metric. | string | `60` | no |
-| metrics_config | "Which metrics should we send to cloudwatch, the default is standard. Setting this variable to advanced will send all the available metrics that are provided by the agent.   You can find more information here https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html" | string | `standard` | no |
-| name | Solution name, e.g. 'app' or 'jenkins' | string | - | yes |
-| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | string | `` | no |
+| metrics_config | "Which metrics should we send to cloudwatch, the default is standard. Setting this variable to advanced will send all the available metrics that are provided by the agent.   You can find more information here https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/create-cloudwatch-agent-configuration-file-wizard.html." | string | `standard` | no |
+| name | Solution name, e.g. 'app'. | string | - | yes |
+| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp'. | string | - | yes |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', or 'test'. | string | `` | no |
 | userdata_part_content | The user data that should be passed along from the caller of the module. | string | `` | no |
 | userdata_part_content_type | What format is userdata_part_content in - eg 'text/cloud-config' or 'text/x-shellscript'. | string | `text/cloud-config` | no |
 | userdata_part_merge_type | Control how cloud-init merges user-data sections. | string | `list(append)+dict(recurse_array)+str()` | no |
@@ -159,6 +159,19 @@ Are you using this project or any of our other projects? Consider [leaving a tes
 Check out these related projects.
 
 - [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) - Terraform Module for provisioning a general purpose EC2 host.
+- [terraform-aws-cloudtrail-cloudwatch-alarms](https://github.com/cloudposse/terraform-aws-cloudtrail-cloudwatch-alarms) - Terraform module for creating alarms for tracking important changes and occurrences from cloudtrail.
+- [terraform-aws-rds-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-rds-cloudwatch-sns-alarms) - Terraform module that configures important RDS alerts using CloudWatch and sends them to an SNS topic
+- [terraform-aws-cloudwatch-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-logs) - Terraform Module to Provide a CloudWatch Logs Endpoint
+- [terraform-aws-alb-target-group-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-alb-target-group-cloudwatch-sns-alarms) - Terraform module to create CloudWatch Alarms on ALB Target level metrics.
+- [terraform-aws-cloudwatch-flow-logs](https://github.com/cloudposse/terraform-aws-cloudwatch-flow-logs) - Terraform module for enabling flow logs for vpc and subnets.
+- [terraform-aws-ecs-cloudwatch-autoscaling](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-autoscaling) - Terraform module to autoscale ECS Service based on CloudWatch metrics
+- [terraform-aws-elasticache-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-elasticache-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for ElastiCache
+- [terraform-aws-efs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-efs-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EFS
+- [terraform-aws-ecs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ecs-cloudwatch-sns-alarms) - Terraform module to create CloudWatch Alarms on ECS Service level metrics.
+- [terraform-aws-ec2-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ec2-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EC2 instances
+- [terraform-aws-sqs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms) - Terraform module for creating alarms for SQS and notifying endpoints
+- [terraform-aws-lambda-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms) - Terraform module for creating a set of Lambda alarms and outputting to an endpoint
+- [terraform-aws-cloudwatch-sns-topic-notify](https://github.com/cloudposse/terraform-aws-cloudwatch-sns-topic-notify) - 
 
 
 
