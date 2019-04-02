@@ -48,7 +48,7 @@ related:
 
 # Short description of this project
 description: |-
-  Terraform module to install the cloudwatch agent on an ec2 instance using cloud-init.
+  Terraform module to install the CloudWatch agent on EC2 instances using `cloud-init`.
 
 # How to use this project
 examples: |-
