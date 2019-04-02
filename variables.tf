@@ -21,7 +21,7 @@ variable "disk_resources" {
 }
 
 variable "userdata_part_content" {
-  description = "The user data that should be passed along from the caller of the module."
+  description = "The user data that should be passed along from the caller of the module"
   type        = "string"
   default     = ""
 }
