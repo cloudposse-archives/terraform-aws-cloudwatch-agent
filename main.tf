@@ -1,8 +1,8 @@
 module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.7.0"
-  environment = "${var.environment}"
-  name        = "${var.name}"
-  namespace   = "${var.namespace}"
+  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.7.0"
+  stage     = "${var.stage}"
+  name      = "${var.name}"
+  namespace = "${var.namespace}"
 }
 
 data "template_file" "cloud_init_cloudwatch_agent" {
