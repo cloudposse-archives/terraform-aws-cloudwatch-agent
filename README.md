@@ -40,6 +40,14 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 
 
 
+## Usage
+
+
+**IMPORTANT:** The `master` branch is used in `source` just as an example. In your code, do not pin to `master` because there may be breaking changes between releases.
+Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-cloudwatch-agent/releases).
+
+
+<no value>
 
 
 
@@ -171,7 +179,6 @@ Check out these related projects.
 - [terraform-aws-ec2-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-ec2-cloudwatch-sns-alarms) - Terraform module that configures CloudWatch SNS alerts for EC2 instances
 - [terraform-aws-sqs-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-sqs-cloudwatch-sns-alarms) - Terraform module for creating alarms for SQS and notifying endpoints
 - [terraform-aws-lambda-cloudwatch-sns-alarms](https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms) - Terraform module for creating a set of Lambda alarms and outputting to an endpoint
-- [terraform-aws-cloudwatch-sns-topic-notify](https://github.com/cloudposse/terraform-aws-cloudwatch-sns-topic-notify) - 
 
 
 

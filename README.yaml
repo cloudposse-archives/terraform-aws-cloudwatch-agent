@@ -94,15 +94,14 @@ related:
     description: "Terraform module for creating a set of Lambda alarms and outputting to an endpoint"
     url: "https://github.com/cloudposse/terraform-aws-lambda-cloudwatch-sns-alarms"
 
-  - name: "terraform-aws-cloudwatch-sns-topic-notify"
-    description: ""
-    url: "https://github.com/cloudposse/terraform-aws-cloudwatch-sns-topic-notify"
-
 # Short description of this project
 description: |-
   Terraform module to install the CloudWatch agent on EC2 instances using `cloud-init`.
 
 # How to use this project
+
+usage:
+
 examples: |-
 
   ### Example with launch configuration:
