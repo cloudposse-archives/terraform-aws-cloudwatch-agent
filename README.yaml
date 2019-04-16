@@ -100,9 +100,7 @@ description: |-
 
 # How to use this project
 
-usage:
-
-examples: |-
+usage: |-
 
   ### Example with launch configuration:
 

@@ -47,13 +47,6 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-cloudwatch-agent/releases).
 
 
-<no value>
-
-
-
-
-## Examples
-
 
 ### Example with launch configuration:
 
@@ -116,6 +109,9 @@ resource "aws_iam_instance_profile" "cloudwatch_agent" {
   role        = "${module.cloudwatch_agent.role_name}"
 }
 ```
+
+
+
 
 
 
