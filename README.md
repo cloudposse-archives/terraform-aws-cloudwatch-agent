@@ -52,9 +52,9 @@ Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest re
 
 ```hcl
 module "cloudwatch_agent" {
-  source      = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+  source = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
 
-  name        = "cloudwatch_agent"
+  name = "cloudwatch_agent"
 }
 
 resource "aws_launch_configuration" "multipart" {
@@ -76,11 +76,11 @@ resource "aws_launch_configuration" "multipart" {
 
 ```hcl
 module "cloudwatch_agent" {
-  source      = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+  source = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
 
-  name                  = "cloudwatch_agent"
-  environment           = "dev"
-  namespace             = "eg"
+  name      = "cloudwatch_agent"
+  stage     = "dev"
+  namespace = "eg"
 
   metrics_config        = "advanced"
   userdata_part_content = "${data.template_file.cloud-init.rendered}"
