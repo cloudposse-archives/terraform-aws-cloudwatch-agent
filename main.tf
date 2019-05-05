@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "ec2_cloudwatch" {
 }
 
 resource "aws_iam_role" "ec2_cloudwatch" {
-  name = "${module.label.id}"
+  name = "${module.label.id}_cloudwatch_agent"
 
   assume_role_policy = "${data.aws_iam_policy_document.ec2_cloudwatch.json}"
 
@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "wildcard_cloudwatch_agent" {
 }
 
 resource "aws_iam_role_policy" "wildcard_cloudwatch_agent" {
-  name = "${module.label.id}"
+  name = "${module.label.id}_cloudwatch_agent"
 
   role   = "${aws_iam_role.ec2_cloudwatch.id}"
   policy = "${data.aws_iam_policy_document.wildcard_cloudwatch_agent.json}"
