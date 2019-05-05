@@ -71,7 +71,8 @@ resource "aws_launch_configuration" "multipart" {
   }
 }
 ```
-### Example with using the role_policy_document:
+
+### Example with using the iam_policy_document and aws_iam_role:
 
 ```hcl
 locals {
