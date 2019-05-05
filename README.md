@@ -71,6 +71,79 @@ resource "aws_launch_configuration" "multipart" {
   }
 }
 ```
+### Example with using the role_policy_document:
+
+```hcl
+locals {
+  application {
+    name      = "cloudwatch_agent"
+    stage     = "dev"
+    namespace = "eg"
+  }
+}
+
+module "label" {
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  environment = "${local.application["stage"]}"
+  name        = "${local.application["name"]}"
+  namespace   = "${local.application["namespace"]}"
+}
+
+module "cloudwatch_agent" {
+  source = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+
+  name      = "${module.label.name}"
+  stage     = "${module.label.environment}"
+  namespace = "${module.label.namespace}"
+}
+
+resource "aws_launch_configuration" "multipart" {
+  name_prefix          = "${module.label.name}"
+  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
+  instance_type        = "t2.micro"
+  user_data_base64     = "${module.cloudwatch_agent.user_data}"
+  security_groups      = ["${aws_security_group.ecs.id}"]
+  key_name             = "${var.ssh_key_pair}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+data "aws_iam_policy_document" "ec2_cloudwatch" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals = {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ec2" {
+  name = "${module.label.id}"
+
+  assume_role_policy = "${data.aws_iam_policy_document.ec2_cloudwatch.json}"
+
+  tags = {
+    Name = "${module.label.id}"
+  }
+}
+
+resource "aws_iam_role_policy" "cloudwatch_agent" {
+  name   = "${module.label.id}"
+  policy = "${module.cloudwatch_agent.iam_policy_document}"
+  role   = "${aws_iam_role.ec2.id}"
+}
+
+resource "aws_iam_instance_profile" "cloudwatch_agent" {
+  name_prefix = "${module.label.name}"
+  role        = "${aws_iam_role.ec2.name}"
+}
+```
 
 ### Example with passing user-data and using the role from the module using advanced metrics configuration:
 
@@ -145,7 +218,8 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| role_name | The role name that should be attached to the role policy |
+| iam_policy_document | The iam policy document that can be attached to a role policy |
+| role_name | The role name that can be attached to the instance role |
 | user_data | The user_data with the cloudwatch_agent configuration in base64 and gzipped |
 
 
