@@ -1,8 +1,9 @@
 module "label" {
-  source    = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.7.0"
-  stage     = "${var.stage}"
-  name      = "${var.name}"
-  namespace = "${var.namespace}"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.7.0"
+  stage      = "${var.stage}"
+  name       = "${var.name}"
+  namespace  = "${var.namespace}"
+  attributes = ["cloudwatch-agent"]
 }
 
 data "template_file" "cloud_init_cloudwatch_agent" {
@@ -66,7 +67,7 @@ data "aws_iam_policy_document" "ec2_cloudwatch" {
 }
 
 resource "aws_iam_role" "ec2_cloudwatch" {
-  name = "${module.label.id}_cloudwatch_agent"
+  name = "${module.label.id}"
 
   assume_role_policy = "${data.aws_iam_policy_document.ec2_cloudwatch.json}"
 
@@ -89,7 +90,7 @@ data "aws_iam_policy_document" "wildcard_cloudwatch_agent" {
 }
 
 resource "aws_iam_role_policy" "wildcard_cloudwatch_agent" {
-  name = "${module.label.id}_cloudwatch_agent"
+  name = "${module.label.id}"
 
   role   = "${aws_iam_role.ec2_cloudwatch.id}"
   policy = "${data.aws_iam_policy_document.wildcard_cloudwatch_agent.json}"
