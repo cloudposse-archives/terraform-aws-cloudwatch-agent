@@ -9,6 +9,6 @@ output "role_name" {
 }
 
 output "iam_policy_document" {
-  description = "The iam policy document that can be attached to a role policy"
+  description = "The IAM policy document that can be attached to a role policy"
   value       = "${data.aws_iam_policy_document.wildcard_cloudwatch_agent.json}"
 }
