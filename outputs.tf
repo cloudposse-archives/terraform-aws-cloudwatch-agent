@@ -4,7 +4,7 @@ output "user_data" {
 }
 
 output "role_name" {
-  description = "The role name that can be attached to the instance role"
+  description = "The name of the created IAM role that can be assumed by the instance"
   value       = "${aws_iam_role.ec2_cloudwatch.name}"
 }
 
