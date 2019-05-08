@@ -98,7 +98,7 @@ locals {
 
 module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  stage = "${local.application["stage"]}"
+  stage       = "${local.application["stage"]}"
   name        = "${local.application["name"]}"
   namespace   = "${local.application["namespace"]}"
 }
