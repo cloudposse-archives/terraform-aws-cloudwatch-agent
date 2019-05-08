@@ -18,7 +18,7 @@
 
 | Name | Description |
 |------|-------------|
-| iam_policy_document | The iam policy document that can be attached to a role policy |
-| role_name | The role name that can be attached to the instance role |
+| iam_policy_document | The IAM policy document that can be attached to a role policy |
+| role_name | The name of the created IAM role that can be assumed by the instance |
 | user_data | The user_data with the cloudwatch_agent configuration in base64 and gzipped |
 

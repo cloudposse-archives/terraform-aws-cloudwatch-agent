@@ -59,7 +59,7 @@ module "cloudwatch_agent" {
 
 resource "aws_launch_configuration" "multipart" {
   name_prefix          = "cloudwatch_agent"
-  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
   iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
   instance_type        = "t2.micro"
   user_data_base64     = "${module.cloudwatch_agent.user_data}"
@@ -69,6 +69,19 @@ resource "aws_launch_configuration" "multipart" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
 }
 ```
 
@@ -85,7 +98,7 @@ locals {
 
 module "label" {
   source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
-  environment = "${local.application["stage"]}"
+  stage = "${local.application["stage"]}"
   name        = "${local.application["name"]}"
   namespace   = "${local.application["namespace"]}"
 }
@@ -100,7 +113,7 @@ module "cloudwatch_agent" {
 
 resource "aws_launch_configuration" "multipart" {
   name_prefix          = "${module.label.name}"
-  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
   iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
   instance_type        = "t2.micro"
   user_data_base64     = "${module.cloudwatch_agent.user_data}"
@@ -110,6 +123,19 @@ resource "aws_launch_configuration" "multipart" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
 }
 
 data "aws_iam_policy_document" "ec2_cloudwatch" {
@@ -166,7 +192,7 @@ data "template_file" "cloud-init" {
 
 resource "aws_launch_configuration" "multipart" {
   name_prefix          = "cloudwatch_agent"
-  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
   iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
   instance_type        = "t2.micro"
   user_data_base64     = "${module.cloudwatch_agent.user_data}"
@@ -176,6 +202,19 @@ resource "aws_launch_configuration" "multipart" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
 }
 
 resource "aws_iam_instance_profile" "cloudwatch_agent" {
@@ -219,8 +258,8 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| iam_policy_document | The iam policy document that can be attached to a role policy |
-| role_name | The role name that can be attached to the instance role |
+| iam_policy_document | The IAM policy document that can be attached to a role policy |
+| role_name | The name of the created IAM role that can be assumed by the instance |
 | user_data | The user_data with the cloudwatch_agent configuration in base64 and gzipped |
 
 
