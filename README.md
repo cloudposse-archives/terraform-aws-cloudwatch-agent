@@ -94,7 +94,7 @@ module "cloudwatch_agent" {
   source = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
 
   name      = "${module.label.name}"
-  stage     = "${module.label.environment}"
+  stage     = "${module.label.stage}"
   namespace = "${module.label.namespace}"
 }
 
