@@ -3,7 +3,7 @@ module "label" {
   stage      = "${var.stage}"
   name       = "${var.name}"
   namespace  = "${var.namespace}"
-  attributes = ["cloudwatch-agent"]
+  attributes = "${var.attributes}"
 }
 
 data "template_file" "cloud_init_cloudwatch_agent" {
