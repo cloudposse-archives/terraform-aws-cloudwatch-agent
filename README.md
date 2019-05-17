@@ -59,7 +59,7 @@ module "cloudwatch_agent" {
 
 resource "aws_launch_configuration" "multipart" {
   name_prefix          = "cloudwatch_agent"
-  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
   iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
   instance_type        = "t2.micro"
   user_data_base64     = "${module.cloudwatch_agent.user_data}"
@@ -69,6 +69,106 @@ resource "aws_launch_configuration" "multipart" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
+}
+```
+
+### Example with using the iam_policy_document and aws_iam_role:
+
+```hcl
+locals {
+  application {
+    name      = "cloudwatch_agent"
+    stage     = "dev"
+    namespace = "eg"
+  }
+}
+
+module "label" {
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=master"
+  stage       = "${local.application["stage"]}"
+  name        = "${local.application["name"]}"
+  namespace   = "${local.application["namespace"]}"
+}
+
+module "cloudwatch_agent" {
+  source = "git::https://github.com/cloudposse/terraform-aws-cloudwatch-agent?ref=master"
+
+  name      = "${module.label.name}"
+  stage     = "${module.label.stage}"
+  namespace = "${module.label.namespace}"
+}
+
+resource "aws_launch_configuration" "multipart" {
+  name_prefix          = "${module.label.name}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
+  iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
+  instance_type        = "t2.micro"
+  user_data_base64     = "${module.cloudwatch_agent.user_data}"
+  security_groups      = ["${aws_security_group.ecs.id}"]
+  key_name             = "${var.ssh_key_pair}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
+}
+
+data "aws_iam_policy_document" "ec2_cloudwatch" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals = {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "ec2" {
+  name = "${module.label.id}"
+
+  assume_role_policy = "${data.aws_iam_policy_document.ec2_cloudwatch.json}"
+
+  tags = {
+    Name = "${module.label.id}"
+  }
+}
+
+resource "aws_iam_role_policy" "cloudwatch_agent" {
+  name   = "${module.label.id}"
+  policy = "${module.cloudwatch_agent.iam_policy_document}"
+  role   = "${aws_iam_role.ec2.id}"
+}
+
+resource "aws_iam_instance_profile" "cloudwatch_agent" {
+  name_prefix = "${module.label.name}"
+  role        = "${aws_iam_role.ec2.name}"
 }
 ```
 
@@ -92,7 +192,7 @@ data "template_file" "cloud-init" {
 
 resource "aws_launch_configuration" "multipart" {
   name_prefix          = "cloudwatch_agent"
-  image_id             = "${data.aws_ami.ecs-optimized.id}"
+  image_id             = "${data.aws_ami.ecs_optimized.id}"
   iam_instance_profile = "${aws_iam_instance_profile.cloudwatch_agent.name}"
   instance_type        = "t2.micro"
   user_data_base64     = "${module.cloudwatch_agent.user_data}"
@@ -102,6 +202,19 @@ resource "aws_launch_configuration" "multipart" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+data "aws_ami" "ecs_optimized" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-ecs-hvm-*-x86_64-*"]
+  }
+
+  owners = [
+    "amazon",
+  ]
 }
 
 resource "aws_iam_instance_profile" "cloudwatch_agent" {
@@ -130,6 +243,7 @@ Available targets:
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | aggregation_dimensions | Specifies the dimensions that collected metrics are to be aggregated on. | list | `<list>` | no |
+| attributes | Add a suffix to the resource names. | list | `<list>` | no |
 | cpu_resources | Specifies that per-cpu metrics are to be collected. The only allowed value is *. If you include this field and value, per-cpu metrics are collected. | string | `"resources": ["*"],` | no |
 | disk_resources | Specifies an array of disk mount points. This field limits CloudWatch to collect metrics from only the listed mount points. You can specify * as the value to collect metrics from all mount points. Defaults to the root / mountpount. | list | `<list>` | no |
 | metrics_collection_interval | Specifies how often to collect the cpu metrics, overriding the global metrics_collection_interval specified in the agent section of the configuration file. If you set this value below 60 seconds, each metric is collected as a high-resolution metric. | string | `60` | no |
@@ -145,7 +259,8 @@ Available targets:
 
 | Name | Description |
 |------|-------------|
-| role_name | The role name that should be attached to the role policy |
+| iam_policy_document | The IAM policy document that can be attached to a role policy |
+| role_name | The name of the created IAM role that can be assumed by the instance |
 | user_data | The user_data with the cloudwatch_agent configuration in base64 and gzipped |
 
 

@@ -72,3 +72,12 @@ EOF
   type    = "string"
   default = 60
 }
+
+variable "attributes" {
+  description = "Add a suffix to the resource names."
+  type        = "list"
+
+  default = [
+    "cloudwatch-agent",
+  ]
+}
