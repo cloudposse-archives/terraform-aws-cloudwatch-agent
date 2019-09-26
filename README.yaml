@@ -197,7 +197,7 @@ usage: |-
       effect  = "Allow"
       actions = ["sts:AssumeRole"]
 
-      principals = {
+      principals {
         type        = "Service"
         identifiers = ["ec2.amazonaws.com"]
       }

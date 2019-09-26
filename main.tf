@@ -1,5 +1,5 @@
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.7.0"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.15.0"
   stage      = "${var.stage}"
   name       = "${var.name}"
   namespace  = "${var.namespace}"
@@ -9,7 +9,7 @@ module "label" {
 data "template_file" "cloud_init_cloudwatch_agent" {
   template = "${file("${path.module}/templates/cloud_init.yaml")}"
 
-  vars {
+  vars = {
     cloudwatch_agent_configuration = "${var.metrics_config == "standard" ? base64encode(data.template_file.cloudwatch_agent_configuration_standard.rendered) : base64encode(data.template_file.cloudwatch_agent_configuration_advanced.rendered)}"
   }
 }
@@ -17,7 +17,7 @@ data "template_file" "cloud_init_cloudwatch_agent" {
 data "template_file" "cloudwatch_agent_configuration_advanced" {
   template = "${file("${path.module}/templates/cloudwatch_agent_configuration_advanced.json")}"
 
-  vars {
+  vars = {
     aggregation_dimensions      = "${jsonencode(var.aggregation_dimensions)}"
     cpu_resources               = "${var.cpu_resources}"
     disk_resources              = "${jsonencode(var.disk_resources)}"
@@ -28,7 +28,7 @@ data "template_file" "cloudwatch_agent_configuration_advanced" {
 data "template_file" "cloudwatch_agent_configuration_standard" {
   template = "${file("${path.module}/templates/cloudwatch_agent_configuration_standard.json")}"
 
-  vars {
+  vars = {
     aggregation_dimensions      = "${jsonencode(var.aggregation_dimensions)}"
     cpu_resources               = "${var.cpu_resources}"
     disk_resources              = "${jsonencode(var.disk_resources)}"
@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "ec2_cloudwatch" {
     effect  = "Allow"
     actions = ["sts:AssumeRole"]
 
-    principals = {
+    principals {
       type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
